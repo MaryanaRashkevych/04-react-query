@@ -5,19 +5,16 @@ interface MovieSearchResponse {
   page: number;
   results: Movie[];
   total_pages: number;
-  total_results: number;
 }
 
 const token = import.meta.env.VITE_TMDB_TOKEN;
 const baseUrl = "https://api.themoviedb.org/3/search/movie";
 
-export async function fetchMovies(query: string): Promise<Movie[]> {
+export async function fetchMovies(query: string, page: number): Promise<MovieSearchResponse> {
   const config = {
     params: {
       query,
-      include_adult: false,
-      language: "en-US",
-      page: 1,
+      page,
     },
     headers: {
       Authorization: `Bearer ${token}`,
@@ -25,5 +22,5 @@ export async function fetchMovies(query: string): Promise<Movie[]> {
   };
 
   const response = await axios.get<MovieSearchResponse>(baseUrl, config);
-  return response.data.results;
+  return response.data;
 }
